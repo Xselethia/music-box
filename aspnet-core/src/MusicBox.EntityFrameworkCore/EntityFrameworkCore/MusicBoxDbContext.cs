@@ -57,6 +57,7 @@ public class MusicBoxDbContext :
     public virtual DbSet<Artist> Artists { get; set; }
     // public virtual DbSet<Album> Albums { get; set; }
     // public virtual DbSet<Song> Songs { get; set; }
+    public virtual DbSet<SongDetail> SongDetails { get; set; }
 
     public MusicBoxDbContext(DbContextOptions<MusicBoxDbContext> options)
         : base(options)
@@ -127,6 +128,11 @@ public class MusicBoxDbContext :
             
             b.HasIndex(q => q.Name);
             b.HasIndex(q => q.Genre);
+        });
+
+        builder.Entity<SongDetail>(b =>
+        {
+            b.HasNoKey().ToView("View_SongDetails");
         });
     }
 }

@@ -11,7 +11,7 @@ public class Artist : AggregateRoot<Guid>
 {
     private readonly List<Album> _albums = new();
     public string Name { get; init; }
-    public string LastName { get; init; }
+    public string LastName { get; init; } //TODO: Nullable
     public string Image { get; private set; }
     public string Biography { get; private set; }
     public IReadOnlyCollection<Album> Albums => _albums;
@@ -47,13 +47,15 @@ public class Artist : AggregateRoot<Guid>
         }
     }
 
-    public void AddAlbum(Guid albumId, [NotNull] string albumName, int releaseDate, bool isSingle,
+    public Album AddAlbum(Guid albumId, [NotNull] string albumName, int releaseDate, bool isSingle,
         string coverImage = null)
     {
-        _albums.AddIfNotContains(new Album(albumId, albumName, releaseDate, isSingle, coverImage));
+        var album = new Album(albumId, albumName, releaseDate, isSingle, coverImage);
+        _albums.AddIfNotContains(album);
+        return album;
     }
 
-    public void AddSongToAlbum(Guid albumId,
+    public Album AddSongToAlbum(Guid albumId,
         Guid songId,
         [NotNull] string name,
         [NotNull] string sourceLink,
@@ -68,9 +70,10 @@ public class Artist : AggregateRoot<Guid>
         }
 
         album.AddSong(songId, name, sourceLink, genre, metadata, lyrics);
+        return album;
     }
 
-    public void AddSingleSong(Guid songId,
+    public Album AddSingleSong(Guid songId,
         int releaseDate,
         [NotNull] string name,
         [NotNull] string sourceLink,
@@ -81,5 +84,7 @@ public class Artist : AggregateRoot<Guid>
     {
         var newAlbum = new Album(songId, name, releaseDate, true, coverImage);
         newAlbum.AddSong(songId, name, sourceLink, genre, metadata, lyrics);
+        _albums.AddIfNotContains(newAlbum);
+        return newAlbum;
     }
 }
