@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MusicBox.Artists;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
@@ -52,10 +54,13 @@ public class MusicBoxDbContext :
 
     #endregion
 
+    public virtual DbSet<Artist> Artists { get; set; }
+    // public virtual DbSet<Album> Albums { get; set; }
+    // public virtual DbSet<Song> Songs { get; set; }
+
     public MusicBoxDbContext(DbContextOptions<MusicBoxDbContext> options)
         : base(options)
     {
-
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -75,11 +80,53 @@ public class MusicBoxDbContext :
 
         /* Configure your own tables/entities inside here */
 
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(MusicBoxConsts.DbTablePrefix + "YourEntities", MusicBoxConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
+        builder.Entity<Artist>(b =>
+        {
+            b.ToTable(MusicBoxConsts.DbTablePrefix + "Artists", MusicBoxConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(q => q.Name).HasMaxLength(MusicBoxConstants.Artist.NameMaxLength).IsRequired();
+            b.Property(q => q.LastName).HasMaxLength(MusicBoxConstants.Artist.LastNameMaxLength).IsRequired();
+            b.Property(q => q.Image).HasMaxLength(MusicBoxConstants.Artist.ImageMaxLength);
+            b.Property(q => q.Biography).HasMaxLength(MusicBoxConstants.Artist.BiographyMaxLength);
+
+            b.Metadata.FindNavigation(nameof(Artist.Albums))?.SetPropertyAccessMode(PropertyAccessMode.Field);
+
+            b.HasIndex(q => q.Name);
+            b.HasIndex(q => q.LastName);
+        });
+        
+        builder.Entity<Album>(b =>
+        {
+            b.ToTable(MusicBoxConsts.DbTablePrefix + "Albums", MusicBoxConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(q => q.Name).HasMaxLength(MusicBoxConstants.Album.NameMaxLength).IsRequired();
+            b.Property(q => q.ReleaseYear).IsRequired();
+            b.Property(q => q.IsSingle).IsRequired();
+            b.Property(q => q.CoverImage).HasMaxLength(MusicBoxConstants.Album.CoverImageMaxLength);
+
+            b.Metadata.FindNavigation(nameof(Album.Songs))?.SetPropertyAccessMode(PropertyAccessMode.Field);
+
+            b.HasIndex(q => q.Name);
+            b.HasIndex(q => q.ReleaseYear);
+        });
+        
+        builder.Entity<Song>(b =>
+        {
+            b.ToTable(MusicBoxConsts.DbTablePrefix + "Songs", MusicBoxConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(q => q.Name).HasMaxLength(MusicBoxConstants.Song.NameMaxLength).IsRequired();
+            b.Property(q => q.SourceLink).HasMaxLength(MusicBoxConstants.Song.SourceLinkMaxLength).IsRequired();
+            b.Property(q => q.Genre).HasMaxLength(MusicBoxConstants.Song.GenreMaxLength).IsRequired();
+
+            b.OwnsOne(q => q.MetaData)
+                .Property(q => q.Suffix).HasMaxLength(MusicBoxConstants.Song.MetadataSuffixMaxLength).IsRequired()
+                .HasColumnName("SongSuffix");
+            b.OwnsOne(q => q.MetaData)
+                .Property(q => q.LengthInSeconds)
+                .HasColumnName("Length");
+            
+            b.HasIndex(q => q.Name);
+            b.HasIndex(q => q.Genre);
+        });
     }
 }
