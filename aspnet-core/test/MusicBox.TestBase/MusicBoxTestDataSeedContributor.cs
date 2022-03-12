@@ -26,7 +26,7 @@ public class MusicBoxTestDataSeedContributor : IDataSeedContributor, ITransientD
 
     public async Task SeedAsync(DataSeedContext context)
     {
-        await SeedDataAsync(context);
+        // await SeedDataAsync(context);
     }
 
     private async Task SeedDataAsync(DataSeedContext context)
@@ -43,12 +43,6 @@ public class MusicBoxTestDataSeedContributor : IDataSeedContributor, ITransientD
         artist.AddSingleSong(_testData.TarkanSingleAlbumId, 2022, _testData.TarkanSingleSongName,
             "https://music.youtube.com/watch?v=EFdhMJby7Ts",
             SongGenres.Pop, new SongMetaData(195));
-
-        // var geccenAlbum = artist.AddAlbum(_testData.TarkanSingleAlbumId, _testData.TarkanSingleSongName, 2022, true,
-        //     "no cover");
-        // geccenAlbum.AddSong(_testData.TarkanSingleAlbumId, _testData.TarkanSingleSongName,
-        //     "https://music.youtube.com/watch?v=EFdhMJby7Ts",
-        //     SongGenres.Pop, new SongMetaData("link", 195), "Wololo");
 
         await _repository.InsertAsync(artist, true);
             
