@@ -20,19 +20,13 @@ public class Album : Entity<Guid>
     {
     }
 
-    public Album(Guid id, [NotNull] string name, int releaseYear, bool isSingle, string coverImage = null)
+    public Album(Guid id, [NotNull] string name, int releaseYear, bool isSingle, string coverImage = "")
         : base(id)
     {
         Name = Check.NotNullOrEmpty(name, nameof(name), MusicBoxConstants.Album.NameMaxLength);
         ReleaseYear = releaseYear; // TODO Validate
         IsSingle = isSingle;
-
-        if (!coverImage.IsNullOrEmpty())
-        {
-            Check.Length(coverImage, nameof(coverImage), MusicBoxConstants.Album.CoverImageMaxLength);
-        }
-
-        CoverImage = coverImage;
+        CoverImage = Check.Length(coverImage, nameof(coverImage), MusicBoxConstants.Album.CoverImageMaxLength);
     }
 
     public void AddSong(Guid songId,

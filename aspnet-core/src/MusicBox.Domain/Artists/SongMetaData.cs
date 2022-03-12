@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
 using Volo.Abp;
 using Volo.Abp.Domain.Values;
 
@@ -10,15 +9,15 @@ public class SongMetaData : ValueObject
     public string Suffix { get; private set; }
     public int LengthInSeconds { get; private set; }
 
-    public SongMetaData([NotNull] string suffix, int lengthInSeconds)
+    public SongMetaData(int lengthInSeconds, string suffix = "")
     {
-        Suffix = Check.NotNullOrEmpty(suffix, nameof(suffix), MusicBoxConstants.Song.MetadataSuffixMaxLength);
+        Suffix = Check.Length(suffix, nameof(suffix), MusicBoxConstants.Song.MetadataSuffixMaxLength);
         LengthInSeconds = lengthInSeconds;
     }
 
     protected override IEnumerable<object> GetAtomicValues()
     {
-        yield return Suffix;
         yield return LengthInSeconds;
+        yield return Suffix;
     }
 }

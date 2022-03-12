@@ -36,18 +36,17 @@ public class MusicBoxDataSeedContributor : IDataSeedContributor, ITransientDepen
             return;
         }
 
-        var artist = await _artistRepository.InsertAsync(new Artist(_generatorGenerator.Create(), "Tarkan", "Boş"));
-        var duduAlbum = artist.AddAlbum(_generatorGenerator.Create(), "Dudu", 2003, false,
-            "no cover");
+        var artist = await _artistRepository.InsertAsync(new Artist(_generatorGenerator.Create(), "Tarkan"));
+        var duduAlbum = artist.AddAlbum(_generatorGenerator.Create(), "Dudu", 2003, false);
         duduAlbum.AddSong(_generatorGenerator.Create(), "Dudu",
             "https://music.youtube.com/watch?v=zfkzSJHKdhg",
-            SongGenres.Pop, new SongMetaData("link", 277), "Wololo");
+            SongGenres.Pop, new SongMetaData(277));
         duduAlbum.AddSong(_generatorGenerator.Create(), "Gülümse Kaderine",
             "https://music.youtube.com/watch?v=YCMPgYO_-VA",
-            SongGenres.Pop, new SongMetaData("link", 269), "Wololo");
+            SongGenres.Pop, new SongMetaData(269));
         artist.AddSingleSong(_generatorGenerator.Create(), 2022, "Geççek",
             "https://music.youtube.com/watch?v=EFdhMJby7Ts",
-            SongGenres.Pop, new SongMetaData("link", 195), "Wololo", "cover me image");
+            SongGenres.Pop, new SongMetaData(195));
 
         await _artistRepository.InsertAsync(artist, true);
     }

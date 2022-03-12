@@ -24,19 +24,14 @@ public class Song : Entity<Guid>, IHasExtraProperties
         [NotNull] string sourceLink,
         [NotNull] string genre,
         SongMetaData metadata,
-        string lyrics = null)
+        string lyrics = "")
         : base(id)
     {
         Name = Check.NotNullOrEmpty(name, nameof(name), MusicBoxConstants.Song.NameMaxLength);
         SourceLink = Check.NotNullOrEmpty(sourceLink, nameof(sourceLink), MusicBoxConstants.Song.SourceLinkMaxLength);
         Genre = Check.NotNullOrEmpty(genre, nameof(genre), MusicBoxConstants.Song.GenreMaxLength);
-        Lyrics = Check.NotNullOrEmpty(lyrics, nameof(lyrics), MusicBoxConstants.Song.LyricsMaxLength);
-        ValidateMetadata(metadata);
+        Lyrics = Check.Length(lyrics, nameof(lyrics), MusicBoxConstants.Song.LyricsMaxLength);
+        MetaData = metadata;
         ExtraProperties = new ExtraPropertyDictionary();
-    }
-
-    private void ValidateMetadata(SongMetaData metadata)
-    {
-        MetaData = new SongMetaData(metadata.Suffix, metadata.LengthInSeconds);
     }
 }

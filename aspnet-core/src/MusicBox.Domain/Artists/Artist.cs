@@ -10,8 +10,8 @@ namespace MusicBox.Artists;
 public class Artist : AggregateRoot<Guid>
 {
     private readonly List<Album> _albums = new();
-    public string Name { get; init; }
-    public string LastName { get; init; } //TODO: Nullable
+    public string Name { get; private set; }
+    public string LastName { get; private set; }
     public string Image { get; private set; }
     public string Biography { get; private set; }
     public IReadOnlyCollection<Album> Albums => _albums;
@@ -20,31 +20,13 @@ public class Artist : AggregateRoot<Guid>
     {
     }
 
-    public Artist(Guid id, string name, string lastName, string image = null, string biography = null)
+    public Artist(Guid id, string name, string lastName = null, string image = null, string biography = null)
         : base(id)
     {
         Name = Check.NotNullOrEmpty(name, nameof(name), MusicBoxConstants.Artist.NameMaxLength);
-        LastName = Check.NotNullOrEmpty(lastName, nameof(lastName), MusicBoxConstants.Artist.LastNameMaxLength);
-        ValidateImage(image);
-        ValidateBiography(biography);
-        Image = image;
-        Biography = biography;
-    }
-
-    public void ValidateImage(string image)
-    {
-        if (!image.IsNullOrEmpty())
-        {
-            Check.Length(image, nameof(image), MusicBoxConstants.Artist.ImageMaxLength);
-        }
-    }
-
-    public void ValidateBiography(string biography)
-    {
-        if (!biography.IsNullOrEmpty())
-        {
-            Check.Length(biography, nameof(biography), MusicBoxConstants.Artist.BiographyMaxLength);
-        }
+        LastName = Check.Length(lastName, nameof(lastName), MusicBoxConstants.Artist.LastNameMaxLength);
+        Image = Check.Length(image, nameof(image), MusicBoxConstants.Artist.ImageMaxLength);
+        Biography = Check.Length(biography, nameof(biography), MusicBoxConstants.Artist.BiographyMaxLength);
     }
 
     public Album AddAlbum(Guid albumId, [NotNull] string albumName, int releaseDate, bool isSingle,
@@ -66,7 +48,7 @@ public class Artist : AggregateRoot<Guid>
         var album = _albums.Find(q => q.Id == albumId);
         if (album == null)
         {
-            throw new BusinessException("ArtistError001", "Album can not be added");
+            throw new BusinessException("ArtistError001", "Album not found!");
         }
 
         album.AddSong(songId, name, sourceLink, genre, metadata, lyrics);

@@ -28,7 +28,7 @@ public class EfCoreSongDetailRepository : EfCoreRepository<MusicBoxDbContext, So
 
         }
         sqlQuery += @"View_SongDetails AS SELECT Songs.Id, Songs.Name, Songs.Lyrics, Songs.Genre, Songs.SourceLink, Songs.Length, Albums.Id AS AlbumId, Albums.Name AS AlbumName, Albums.ReleaseYear AS AlbumReleaseYear, 
-                Albums.CoverImage AS AlbumCoverImage, Albums.IsSingle AS AlbumIsSingle, Artists.Id AS ArtistId, Artists.Name AS ArtistName, Artists.LastName AS ArtistLastName
+                Albums.CoverImage AS AlbumCoverImage, Albums.IsSingle AS AlbumIsSingle, Artists.Id AS ArtistId, Artists.Name AS ArtistName
                 FROM Albums INNER JOIN
                 Artists ON Albums.ArtistId = Artists.Id INNER JOIN
             Songs ON Albums.Id = Songs.AlbumId";

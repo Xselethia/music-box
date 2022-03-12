@@ -18,5 +18,4 @@ public class SongDetail : Entity<Guid>
     public bool AlbumIsSingle { get; set; }
     public Guid ArtistId { get; set; }
     public string ArtistName { get; set; }
-    public string ArtistLastName { get; set; }
 }

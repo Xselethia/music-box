@@ -86,7 +86,7 @@ public class MusicBoxDbContext :
             b.ToTable(MusicBoxConsts.DbTablePrefix + "Artists", MusicBoxConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(q => q.Name).HasMaxLength(MusicBoxConstants.Artist.NameMaxLength).IsRequired();
-            b.Property(q => q.LastName).HasMaxLength(MusicBoxConstants.Artist.LastNameMaxLength).IsRequired();
+            b.Property(q => q.LastName).HasMaxLength(MusicBoxConstants.Artist.LastNameMaxLength);
             b.Property(q => q.Image).HasMaxLength(MusicBoxConstants.Artist.ImageMaxLength);
             b.Property(q => q.Biography).HasMaxLength(MusicBoxConstants.Artist.BiographyMaxLength);
 
@@ -118,9 +118,10 @@ public class MusicBoxDbContext :
             b.Property(q => q.Name).HasMaxLength(MusicBoxConstants.Song.NameMaxLength).IsRequired();
             b.Property(q => q.SourceLink).HasMaxLength(MusicBoxConstants.Song.SourceLinkMaxLength).IsRequired();
             b.Property(q => q.Genre).HasMaxLength(MusicBoxConstants.Song.GenreMaxLength).IsRequired();
+            b.Property(q => q.Lyrics).HasMaxLength(MusicBoxConstants.Song.LyricsMaxLength);
 
             b.OwnsOne(q => q.MetaData)
-                .Property(q => q.Suffix).HasMaxLength(MusicBoxConstants.Song.MetadataSuffixMaxLength).IsRequired()
+                .Property(q => q.Suffix).HasMaxLength(MusicBoxConstants.Song.MetadataSuffixMaxLength)
                 .HasColumnName("SongSuffix");
             b.OwnsOne(q => q.MetaData)
                 .Property(q => q.LengthInSeconds)

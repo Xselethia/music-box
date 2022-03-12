@@ -26,29 +26,23 @@ public class MusicBoxTestDataSeedContributor : IDataSeedContributor, ITransientD
 
     public async Task SeedAsync(DataSeedContext context)
     {
-        await CreateViewAsync(context);
         await SeedDataAsync(context);
-    }
-
-    private async Task CreateViewAsync(DataSeedContext context)
-    {
-        await _songDetailRepository.CreateViewAsync();
     }
 
     private async Task SeedDataAsync(DataSeedContext context)
     {
-        var artist = await _repository.InsertAsync(new Artist(_testData.TarkanId, _testData.TarkanName, "Boş"));
+        var artist = await _repository.InsertAsync(new Artist(_testData.TarkanId, _testData.TarkanName));
         var duduAlbum = artist.AddAlbum(_testData.TarkanDuduAlbumId, _testData.TarkanDuduAlbumName, 2003, false,
             "no cover");
         duduAlbum.AddSong(_testData.TarkanDuduSongId, _testData.TarkanDuduSongName,
             "https://music.youtube.com/watch?v=zfkzSJHKdhg",
-            SongGenres.Pop, new SongMetaData("link", 277), "Wololo");
+            SongGenres.Pop, new SongMetaData( 277));
         duduAlbum.AddSong(_testData.TarkanSong2Id, _testData.TarkanSong2Name,
             "https://music.youtube.com/watch?v=YCMPgYO_-VA",
-            SongGenres.Pop, new SongMetaData("link", 269), "Wololo");
+            SongGenres.Pop, new SongMetaData( 269));
         artist.AddSingleSong(_testData.TarkanSingleAlbumId, 2022, _testData.TarkanSingleSongName,
             "https://music.youtube.com/watch?v=EFdhMJby7Ts",
-            SongGenres.Pop, new SongMetaData("link", 195), "Wololo", "cover me image");
+            SongGenres.Pop, new SongMetaData(195));
 
         // var geccenAlbum = artist.AddAlbum(_testData.TarkanSingleAlbumId, _testData.TarkanSingleSongName, 2022, true,
         //     "no cover");
