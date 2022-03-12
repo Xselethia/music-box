@@ -15,23 +15,24 @@ public class EfCoreSongDetailRepository : EfCoreRepository<MusicBoxDbContext, So
 
     public async Task CreateViewAsync()
     {
-//         var sql = @"
-//             CREATE OR ALTER VIEW [dbo].[View_SongDetails] AS
-// SELECT        Songs.Id, Songs.Name, Songs.Lyrics, Songs.Genre, Songs.SourceLink, Songs.Length, Albums.Id AS AlbumId, Albums.Name AS AlbumName, Albums.ReleaseYear AS AlbumReleaseYear, 
-//                          Albums.CoverImage AS AlbumCoverImage, Albums.IsSingle AS AlbumIsSingle, Artists.Id AS ArtistId, Artists.Name AS ArtistName, Artists.LastName AS ArtistLastName
-// FROM            Albums INNER JOIN
-//                          Artists ON Albums.ArtistId = Artists.Id INNER JOIN
-//                          Songs ON Albums.Id = Songs.AlbumId";
-        var sql = @"
-            CREATE VIEW View_SongDetails AS
-SELECT        Songs.Id, Songs.Name, Songs.Lyrics, Songs.Genre, Songs.SourceLink, Songs.Length, Albums.Id AS AlbumId, Albums.Name AS AlbumName, Albums.ReleaseYear AS AlbumReleaseYear, 
-                         Albums.CoverImage AS AlbumCoverImage, Albums.IsSingle AS AlbumIsSingle, Artists.Id AS ArtistId, Artists.Name AS ArtistName, Artists.LastName AS ArtistLastName
-FROM            Albums INNER JOIN
-                         Artists ON Albums.ArtistId = Artists.Id INNER JOIN
-                         Songs ON Albums.Id = Songs.AlbumId";
-        //TODO : SqlServer ise "Or ALTER" kullan
+        string sqlQuery;
+
         var dbContext = await GetDbContextAsync();
-        var provider = dbContext.Database.ProviderName;
-        await dbContext.Database.ExecuteSqlRawAsync(sql);
+        if (dbContext.Database.ProviderName != null && dbContext.Database.ProviderName.EndsWith("Sqlite"))
+        {
+            sqlQuery = @"CREATE VIEW ";
+        }
+        else
+        {
+            sqlQuery = @"CREATE OR ALTER VIEW ";
+
+        }
+        sqlQuery += @"View_SongDetails AS SELECT Songs.Id, Songs.Name, Songs.Lyrics, Songs.Genre, Songs.SourceLink, Songs.Length, Albums.Id AS AlbumId, Albums.Name AS AlbumName, Albums.ReleaseYear AS AlbumReleaseYear, 
+                Albums.CoverImage AS AlbumCoverImage, Albums.IsSingle AS AlbumIsSingle, Artists.Id AS ArtistId, Artists.Name AS ArtistName, Artists.LastName AS ArtistLastName
+                FROM Albums INNER JOIN
+                Artists ON Albums.ArtistId = Artists.Id INNER JOIN
+            Songs ON Albums.Id = Songs.AlbumId";
+
+        await dbContext.Database.ExecuteSqlRawAsync(sqlQuery);
     }
 }
