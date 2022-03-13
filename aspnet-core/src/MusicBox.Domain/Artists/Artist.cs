@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities;
-using Volo.Abp.Guids;
 
 namespace MusicBox.Artists;
 

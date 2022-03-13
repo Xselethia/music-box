@@ -6,6 +6,10 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>MusicBox</RootNamespace>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MusicBox.Domain\MusicBox.Domain.csproj" />
